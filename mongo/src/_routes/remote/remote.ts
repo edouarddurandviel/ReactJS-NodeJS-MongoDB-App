@@ -1,9 +1,8 @@
-import express, { Request, Response } from "express";
+import express, { Response } from "express";
 import CompanyController from "@controllers/company";
 import { handleErrors } from "@libs/server";
 import { remotePostAccess } from "@middleware/remoteAccess";
 import { ExtendedRequest } from "../../_interfaces/requests";
-import { Server } from "socket.io";
 
 export default () => {
   const router = express.Router();
