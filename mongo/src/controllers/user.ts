@@ -56,7 +56,7 @@ class UserController {
     return user;
   }
 
-  public async login(email: string, password: string) {
+  public async login(email: string, password: string, maxAge: any) {
     const user = await userActions.getOneUserWithEmail(email);
     const salt = Buffer.from(user.salt, "hex");
 
@@ -72,10 +72,15 @@ class UserController {
 
     if (hash.toString("hex") === user.password) {
       // create jwt token
-      const payload = { userId: user._id };
-      const secret = password;
-      const token = jwt.sign(payload, secret, { expiresIn: "1w" });
-      await userActions.storeUserToken(token, user._id);
+      const Session_Id = Date.now().toString();
+      const payload = { Session_Id: Session_Id }; // session id
+      const secret = process.env.ENV_SECRET;
+
+      const token = secret && jwt.sign(payload, secret, { expiresIn: Date.now() + maxAge });
+
+      token && (await userActions.storeUserToken(Session_Id, user._id));
+
+     
 
       //const roles = await userActions.getUserData(user._id.toString());
 
@@ -91,7 +96,7 @@ class UserController {
   }
 
   public async logout(userId: string) {
-    const data = (await userActions.getUserTokenWithId(userId)) as unknown as UserToken;
+    const data = (await userActions.getUserWithId(userId)) as unknown as UserToken;
     const result = await userActions.deleteUserToken(data.userId);
     return result;
   }

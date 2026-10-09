@@ -8,7 +8,7 @@ import { RVInput, LoadingButton, Meta } from "../../components";
 import { BthForm, Container, Form, LoginForm, Message } from "../../components/Layout/styles";
 import type { User } from "../../stores/user/interfaces";
 
-const Index = ({ dispatch, authLoading }: UserProps) => {
+const Index = ({ dispatch }: UserProps) => {
   const form = useForm({
     initialValues: {
       email: "",

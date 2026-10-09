@@ -141,11 +141,23 @@ export const getUserToken = async (token: string) => {
   return userToken;
 };
 
-export const getUserTokenWithId = async (userId: string) => {
+export const getUserTokenWithId = async (sessionId: string) => {
+
+  const userCollection = await inCollection("token");
+  const user = (await userCollection.findOne({
+    token: sessionId
+  })) as unknown as UserToken;
+
+  return user;
+};
+
+export const getUserWithId = async (userId: string) => {
+
   const userCollection = await inCollection("token");
   const user = (await userCollection.findOne({
     userId: new ObjectId(userId)
   })) as unknown as UserToken;
+
   return user;
 };
 

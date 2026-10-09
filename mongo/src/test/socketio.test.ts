@@ -1,6 +1,6 @@
 import { expect, jest, test } from "@jest/globals";
 import { Server } from "socket.io";
-import CompanyController from "../services/company";
+import CompanyController from "../../services/company";
 
 const io = new Server();
 const companyServices = new CompanyController(io);

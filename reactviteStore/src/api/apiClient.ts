@@ -24,10 +24,11 @@ export default async (props: {
   apiClient.interceptors.request.use(async (config) => {
     const key = config.url;
     const isCacheEnabled = await cache.manageRequest(key, config);
+    const cachedData = cache.getCache(key)
     if (isCacheEnabled) {
       return Promise.reject({
         __fromCache: true,
-        data: cache.getCache(key),
+        data: cachedData,
       });
     } else {
       return config;

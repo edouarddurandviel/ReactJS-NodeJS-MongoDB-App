@@ -33,10 +33,12 @@ export default (io: Server) => {
     try {
       const email = await userSchemas.textSchema.validateAsync(req.query.email);
       const password = await userSchemas.textSchema.validateAsync(req.query.password);
-      const result = await userServices.login(email, password);
+
+      const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days
+      const result = await userServices.login(email, password, maxAge);
 
       res.cookie("jwt", result.token, {
-        expires: new Date(Date.now() + 1 * 3600000),
+        maxAge: maxAge,
         httpOnly: true,
         secure: false,
         sameSite: "lax",
@@ -52,6 +54,7 @@ export default (io: Server) => {
   router.post("/logout/:userId", async (req: Request, res: Response) => {
     try {
       const data = await userSchemas.uidSchema.validateAsync(req.params.userId);
+      console.log(data)
       await userServices.logout(data);
 
       res.clearCookie("jwt");
