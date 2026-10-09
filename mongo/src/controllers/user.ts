@@ -6,11 +6,6 @@ import * as jwt from "jsonwebtoken";
 import { UserToken } from "../_interfaces/models";
 
 class UserController {
-  private _io;
-
-  constructor(io: any) {
-    this._io = io;
-  }
 
   public async getAllUsers() {
     const user = await userActions.getAllUsers();
@@ -79,8 +74,6 @@ class UserController {
       const token = secret && jwt.sign(payload, secret, { expiresIn: Date.now() + maxAge });
 
       token && (await userActions.storeUserToken(Session_Id, user._id));
-
-     
 
       //const roles = await userActions.getUserData(user._id.toString());
 

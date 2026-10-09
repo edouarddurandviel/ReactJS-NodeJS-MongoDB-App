@@ -1,20 +1,21 @@
 ## SAM Serverless Application Model
 
-
-
 ## common implementation pattern
+
 ```js
 const { DynamoDBClient, PutItemCommand, GetItemCommand } = require("@aws-sdk/client-dynamodb");
 
 const db = new DynamoDBClient();
 
-export const handler = async (event) => {
+export const handler = async event => {
   const key = event.idempotencyKey;
 
-  const existing = await db.send(new GetItemCommand({
-    TableName: "IdempotencyTable",
-    Key: { id: { S: key } }
-  }));
+  const existing = await db.send(
+    new GetItemCommand({
+      TableName: "IdempotencyTable",
+      Key: { id: { S: key } }
+    })
+  );
 
   if (existing.Item) {
     return JSON.parse(existing.Item.response.S);
@@ -22,19 +23,21 @@ export const handler = async (event) => {
 
   const result = await processPayment(event);
 
-  await db.send(new PutItemCommand({
-    TableName: "IdempotencyTable",
-    Item: {
-      id: { S: key },
-      response: { S: JSON.stringify(result) }
-    }
-  }));
+  await db.send(
+    new PutItemCommand({
+      TableName: "IdempotencyTable",
+      Item: {
+        id: { S: key },
+        response: { S: JSON.stringify(result) }
+      }
+    })
+  );
 
   return result;
 };
 ```
 
-Here are **practical best practices** for building scalable, maintainable 
+Here are **practical best practices** for building scalable, maintainable
 backends with **AWS Lambda + Node.js**. I’ll keep it focused on what actually matters in production.
 
 ---
@@ -43,8 +46,8 @@ backends with **AWS Lambda + Node.js**. I’ll keep it focused on what actually 
 
 **Keep functions small and single-purpose**
 
-* One Lambda = one responsibility (e.g., “createUser”, “processPayment”)
-* Avoid monolithic “do everything” handlers
+- One Lambda = one responsibility (e.g., “createUser”, “processPayment”)
+- Avoid monolithic “do everything” handlers
 
 **Use a clean folder structure**
 
@@ -58,9 +61,9 @@ backends with **AWS Lambda + Node.js**. I’ll keep it focused on what actually 
 
 **Separate concerns**
 
-* Handler → receives event
-* Service → business logic
-* Repository → database access
+- Handler → receives event
+- Service → business logic
+- Repository → database access
 
 ---
 
@@ -70,9 +73,9 @@ Cold starts are one of the biggest issues with Lambda.
 
 **Best practices:**
 
-* Use **Node.js 18+ or 20** (faster startup)
-* Keep deployment package small
-* Avoid heavy libraries (e.g., full AWS SDK v2)
+- Use **Node.js 18+ or 20** (faster startup)
+- Keep deployment package small
+- Avoid heavy libraries (e.g., full AWS SDK v2)
 
 **Use modular imports**
 
@@ -91,7 +94,7 @@ import AWS from "aws-sdk"; // ❌ heavy
 ```js
 const dbClient = new DynamoDBClient();
 
-export const handler = async (event) => {
+export const handler = async event => {
   // reuse client
 };
 ```
@@ -100,17 +103,17 @@ export const handler = async (event) => {
 
 # 📦 3. Manage Dependencies Smartly
 
-* Use **Lambda Layers** for shared libraries
-* Bundle with:
+- Use **Lambda Layers** for shared libraries
+- Bundle with:
 
-  * esbuild (fastest)
-  * or webpack
+  - esbuild (fastest)
+  - or webpack
 
 **Why bundle?**
 
-* Reduces size
-* Faster cold start
-* Removes unused code (tree shaking)
+- Reduces size
+- Faster cold start
+- Removes unused code (tree shaking)
 
 ---
 
@@ -120,12 +123,12 @@ export const handler = async (event) => {
 
 Use:
 
-* AWS Systems Manager Parameter Store
-* AWS Secrets Manager
+- AWS Systems Manager Parameter Store
+- AWS Secrets Manager
 
 **Environment variables**
 
-* Store non-sensitive config (timeouts, feature flags)
+- Store non-sensitive config (timeouts, feature flags)
 
 ---
 
@@ -167,10 +170,10 @@ export const handler = async () => {
 
 **Better option:**
 
-* Use serverless-friendly DBs:
+- Use serverless-friendly DBs:
 
-  * DynamoDB (native AWS)
-  * Aurora Serverless
+  - DynamoDB (native AWS)
+  - Aurora Serverless
 
 ---
 
@@ -178,30 +181,32 @@ export const handler = async () => {
 
 Use:
 
-* Amazon CloudWatch
+- Amazon CloudWatch
 
 **Best practices:**
 
-* Structured logs (JSON)
-* Add request IDs
-* Log errors with context
+- Structured logs (JSON)
+- Add request IDs
+- Log errors with context
 
 Example:
 
 ```js
-console.error(JSON.stringify({
-  message: "Payment failed",
-  userId,
-  error
-}));
+console.error(
+  JSON.stringify({
+    message: "Payment failed",
+    userId,
+    error
+  })
+);
 ```
 
 ---
 
 # ⚡ 8. Error Handling Strategy
 
-* Always return meaningful HTTP responses
-* Don’t expose internal errors
+- Always return meaningful HTTP responses
+- Don’t expose internal errors
 
 ```js
 try {
@@ -223,8 +228,8 @@ Lambda can retry automatically.
 
 **Make operations safe to retry**
 
-* Use idempotency keys
-* Avoid duplicate writes/payments
+- Use idempotency keys
+- Avoid duplicate writes/payments
 
 ---
 
@@ -232,24 +237,24 @@ Lambda can retry automatically.
 
 Use:
 
-* Amazon API Gateway
+- Amazon API Gateway
 
 **Best practices:**
 
-* Validate input at gateway level
-* Use request/response mapping
-* Enable throttling & rate limiting
+- Validate input at gateway level
+- Use request/response mapping
+- Enable throttling & rate limiting
 
 ---
 
 # 🧪 11. Testing Strategy
 
-* Unit test business logic (services)
-* Mock AWS SDK
+- Unit test business logic (services)
+- Mock AWS SDK
 
 Tools:
 
-* Jest
+- Jest
 
 ---
 
@@ -257,30 +262,30 @@ Tools:
 
 Use:
 
-* AWS SAM
-* Serverless Framework
+- AWS SAM
+- Serverless Framework
 
 **Best practices:**
 
-* Deploy per environment (dev/staging/prod)
-* Use feature flags
-* Automate rollbacks
+- Deploy per environment (dev/staging/prod)
+- Use feature flags
+- Automate rollbacks
 
 ---
 
 # 🔒 13. Security Best Practices
 
-* Use least-privilege IAM roles
-* Validate all inputs
-* Enable API Gateway auth (JWT, Cognito)
+- Use least-privilege IAM roles
+- Validate all inputs
+- Enable API Gateway auth (JWT, Cognito)
 
 ---
 
 # ⚡ 14. Performance Tips That Matter
 
-* Increase memory → also increases CPU (often faster overall)
-* Use caching (Redis / API Gateway cache)
-* Prefer event-driven architecture (SQS, SNS)
+- Increase memory → also increases CPU (often faster overall)
+- Use caching (Redis / API Gateway cache)
+- Prefer event-driven architecture (SQS, SNS)
 
 ---
 
@@ -288,20 +293,20 @@ Use:
 
 Avoid Lambda if:
 
-* Long-running jobs (>15 min)
-* Heavy CPU workloads
-* Constant high throughput (consider containers like ECS/Fargate)
+- Long-running jobs (>15 min)
+- Heavy CPU workloads
+- Constant high throughput (consider containers like ECS/Fargate)
 
 ---
 
 # ✅ Simple Production Checklist
 
-* [ ] Small, focused functions
-* [ ] Bundled & optimized
-* [ ] Secrets managed securely
-* [ ] Proper logging & monitoring
-* [ ] Idempotent logic
-* [ ] Tested & CI/CD enabled
+- [ ] Small, focused functions
+- [ ] Bundled & optimized
+- [ ] Secrets managed securely
+- [ ] Proper logging & monitoring
+- [ ] Idempotent logic
+- [ ] Tested & CI/CD enabled
 
 ---
 
@@ -315,16 +320,16 @@ Let’s break this down properly—because **dependency management is one of the
 
 Bad dependency handling leads to:
 
-* ❌ Slow cold starts
-* ❌ Large deployment packages
-* ❌ Hard-to-maintain code
-* ❌ Duplicate libraries across functions
+- ❌ Slow cold starts
+- ❌ Large deployment packages
+- ❌ Hard-to-maintain code
+- ❌ Duplicate libraries across functions
 
 Good handling gives you:
 
-* ⚡ Faster execution
-* 📉 Smaller bundles
-* 🔁 Reusable code
+- ⚡ Faster execution
+- 📉 Smaller bundles
+- 🔁 Reusable code
 
 ---
 
@@ -336,9 +341,9 @@ A **Lambda Layer** is a shared package used by multiple Lambdas.
 
 Use layers for:
 
-* Shared utilities (logging, validation)
-* Common SDK wrappers
-* Heavy dependencies (e.g., database clients)
+- Shared utilities (logging, validation)
+- Common SDK wrappers
+- Heavy dependencies (e.g., database clients)
 
 ---
 
@@ -374,8 +379,8 @@ node_modules/
 
 Avoid layers if:
 
-* You deploy very frequently (layers add versioning complexity)
-* You want fully self-contained functions (simpler CI/CD)
+- You deploy very frequently (layers add versioning complexity)
+- You want fully self-contained functions (simpler CI/CD)
 
 ---
 
@@ -385,8 +390,8 @@ Bundling = packaging your code into a **single optimized file**
 
 Use:
 
-* esbuild → fastest, best for Lambda
-* webpack → more configurable
+- esbuild → fastest, best for Lambda
+- webpack → more configurable
 
 ---
 
@@ -406,9 +411,9 @@ bundle.js = ~1MB ⚡
 
 Benefits:
 
-* Faster cold starts
-* Less I/O at runtime
-* Tree-shaking (removes unused code)
+- Faster cold starts
+- Less I/O at runtime
+- Tree-shaking (removes unused code)
 
 ---
 
@@ -489,19 +494,19 @@ npm install --production
 
 👉 Better:
 
-* `core-utils-layer`
-* `db-layer`
-* `auth-layer`
+- `core-utils-layer`
+- `db-layer`
+- `auth-layer`
 
 ---
 
 # ⚖️ esbuild vs webpack (Quick Comparison)
 
 | Feature         | esbuild ⚡ | webpack 🧠 |
-| --------------- | --------- | ---------- |
-| Speed           | Very fast | Slower     |
-| Config          | Simple    | Complex    |
-| Tree shaking    | Yes       | Yes        |
+| --------------- | ---------- | ---------- |
+| Speed           | Very fast  | Slower     |
+| Config          | Simple     | Complex    |
+| Tree shaking    | Yes        | Yes        |
 | Best for Lambda | ✅         | ⚠️         |
 
 👉 In 90% of Lambda projects → **use esbuild**
@@ -510,14 +515,14 @@ npm install --production
 
 # 🧠 Production Tips
 
-* Keep bundle under **5MB if possible**
-* Use **minify** in production:
+- Keep bundle under **5MB if possible**
+- Use **minify** in production:
 
 ```bash
 --minify
 ```
 
-* Externalize layer dependencies:
+- Externalize layer dependencies:
 
 ```bash
 --external:aws-sdk
@@ -538,10 +543,9 @@ npm install --production
 
 Think of it like:
 
-* **Bundling = optimize per function**
-* **Layers = reuse across functions**
+- **Bundling = optimize per function**
+- **Layers = reuse across functions**
 
 ---
 
 If you want, I can give you a **ready-to-use esbuild config + Lambda layer setup** that you can drop into your project.
-

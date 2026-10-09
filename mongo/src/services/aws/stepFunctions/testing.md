@@ -130,9 +130,7 @@ test("Choice state branches correctly", async () => {
     }
   });
   const result = await client.send(command);
-  expect(JSON.parse(result.output)).toMatchObject({
-    /* expected output */
-  });
+  expect(JSON.parse(result.output)).toMatchObject({/* expected output */});
 });
 ```
 

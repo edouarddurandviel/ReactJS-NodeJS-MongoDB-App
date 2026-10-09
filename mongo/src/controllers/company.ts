@@ -1,25 +1,13 @@
-import { Server } from "socket.io";
-import fs from "fs";
 import * as mongo from "mongodb";
 import { CreateCompany } from "../_interfaces/company";
 import * as companyActions from "../services/company/actions";
 import * as companySockets from "../services/company/sockets/clients";
-import CompanyAdminSocket from "../services/company/sockets/admin";
 import { getObject } from "../services/aws/s3/getObject";
 import path from "path";
 import { open } from "fs/promises";
 
 class CompanyController {
-  private _io;
-  private admin;
-
-  constructor(
-    io: Server
-  ) {
-    this._io = io;
-    this.admin = new CompanyAdminSocket();
-  }
-
+ 
   public async getDocuments() {
     const documents = await getObject("test", "document.jpg");
     return documents;

@@ -7,14 +7,14 @@ Amazon EC2 instance in Amazon Web Services.
 
 Choose:
 
-* AMI: **Ubuntu 22.04** (recommended)
-* Instance: `t3.micro` (free tier ok)
-* Storage: 10–20 GB
+- AMI: **Ubuntu 22.04** (recommended)
+- Instance: `t3.micro` (free tier ok)
+- Storage: 10–20 GB
 
 ### Security Group:
 
-* SSH (22) → your IP
-* MongoDB (27017) → ⚠️ **ONLY your IP (never 0.0.0.0/0)**
+- SSH (22) → your IP
+- MongoDB (27017) → ⚠️ **ONLY your IP (never 0.0.0.0/0)**
 
 ---
 
@@ -140,7 +140,7 @@ bindIp: 0.0.0.0
 
 ⚠️ Only do this if:
 
-* Security group is locked down to your IP
+- Security group is locked down to your IP
 
 ---
 
@@ -183,18 +183,18 @@ mongosh mongodb://admin:password@localhost:27017
 
 # 💸 Cost Estimate
 
-* EC2 t3.micro → ~$5–10/month
-* Storage → small
-* MongoDB → free (self-hosted)
+- EC2 t3.micro → ~$5–10/month
+- Storage → small
+- MongoDB → free (self-hosted)
 
 ---
 
 # ⚠️ Common Mistakes
 
-* ❌ Opening MongoDB to the internet
-* ❌ No authentication enabled
-* ❌ No backups
-* ❌ Running single instance (no replica set)
+- ❌ Opening MongoDB to the internet
+- ❌ No authentication enabled
+- ❌ No backups
+- ❌ Running single instance (no replica set)
 
 ---
 
@@ -207,17 +207,17 @@ mongosh mongodb://admin:password@localhost:27017
 
 # ⚡ Recommendation
 
-* Learning / small project → ✅ this setup
-* Production → ❌ consider:
+- Learning / small project → ✅ this setup
+- Production → ❌ consider:
 
-  * MongoDB Atlas
+  - MongoDB Atlas
 
 ---
 
 If you want next:
 
-* Set up **MongoDB replica set on EC2**
-* Automate with **CloudFormation / Terraform**
-* Or connect MongoDB to your **EKS / Node.js app**
+- Set up **MongoDB replica set on EC2**
+- Automate with **CloudFormation / Terraform**
+- Or connect MongoDB to your **EKS / Node.js app**
 
 Just tell me 👍

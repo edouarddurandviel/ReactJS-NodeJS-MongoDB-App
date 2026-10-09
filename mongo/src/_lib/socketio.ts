@@ -23,5 +23,8 @@ export default {
   },
   getInstance: () => {
     return io;
+  },
+  emit: (ev: any, ...args: any[]) => {
+    return io.emit(ev, ...args);
   }
 };

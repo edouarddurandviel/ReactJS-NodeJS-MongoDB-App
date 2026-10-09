@@ -11,20 +11,19 @@ const uri = isEnv("github")
 let client: MongoClient;
 let db: Db;
 
-
-// 100 users and each user makes about 10 connections requests per day, 
-// which means 1000 requests/day, 
+// 100 users and each user makes about 10 connections requests per day,
+// which means 1000 requests/day,
 // light workload MongoDB connection pool.
 
 export const connectToDatabase = async () => {
   if (db) return;
   client = new MongoClient(uri, {
-      maxPoolSize: 10, // increase for long runnig, hendreds per/s, multi-sharing the app
-      minPoolSize: 2,
-      maxIdleTimeMS: 30000, // 30 seconds
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000
-    });
+    maxPoolSize: 10, // increase for long runnig, hendreds per/s, multi-sharing the app
+    minPoolSize: 2,
+    maxIdleTimeMS: 30000, // 30 seconds
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000
+  });
   if (process.env.NODE_ENV === "development") {
     const admin = client.db().admin();
     const result = await admin.command({ ping: 1 });

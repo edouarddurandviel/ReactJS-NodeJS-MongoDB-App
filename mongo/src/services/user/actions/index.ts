@@ -142,7 +142,6 @@ export const getUserToken = async (token: string) => {
 };
 
 export const getUserTokenWithId = async (sessionId: string) => {
-
   const userCollection = await inCollection("token");
   const user = (await userCollection.findOne({
     token: sessionId
@@ -152,7 +151,6 @@ export const getUserTokenWithId = async (sessionId: string) => {
 };
 
 export const getUserWithId = async (userId: string) => {
-
   const userCollection = await inCollection("token");
   const user = (await userCollection.findOne({
     userId: new ObjectId(userId)

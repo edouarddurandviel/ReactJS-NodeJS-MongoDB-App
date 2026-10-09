@@ -14,14 +14,11 @@ export const sessionToken: RequestHandler = async (
       if (secret) {
         const decode = (await jwt.verify(req.cookies.jwt, secret)) as any;
         if (decode) {
-      
-          const user = (await userActions.getUserTokenWithId(decode.Session_Id));
-      
+          const user = await userActions.getUserTokenWithId(decode.Session_Id);
+
           if (user) {
-       
             const isValid = new Date(parseInt(decode.exp)) > new Date();
             if (isValid) {
-       
               req.user = user;
               next();
             } else {

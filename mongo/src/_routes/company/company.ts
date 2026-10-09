@@ -6,9 +6,9 @@ import { handleErrors } from "@libs/server";
 import { ExtendedRequest } from "../../_interfaces/requests";
 import { Server } from "socket.io";
 
-export default (io: Server) => {
+export default () => {
   const router = express.Router();
-  const companyServices = new CompanyController(io);
+  const companyServices = new CompanyController();
 
   // Write
   router.post("/create", async (req: ExtendedRequest, res: Response) => {

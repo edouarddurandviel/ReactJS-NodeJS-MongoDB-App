@@ -4,18 +4,17 @@ import * as userSchemas from "../../_joiSchemas/users";
 import { handleErrors } from "@libs/server";
 import { sessionToken } from "@middleware/sessionToken";
 import UserController from "@controllers/user";
-import { Server } from "socket.io";
 import { Storage } from "@google-cloud/storage";
 import config from "../../_config/google";
 
-export default (io: Server) => {
+export default () => {
   const router = express.Router({
     mergeParams: false,
     caseSensitive: true,
     strict: true
   });
 
-  const userServices = new UserController(io);
+  const userServices = new UserController();
 
   /* users pages. */
   router.post("/create", async (req: ExtendedRequest, res: Response) => {
@@ -34,7 +33,7 @@ export default (io: Server) => {
       const email = await userSchemas.textSchema.validateAsync(req.query.email);
       const password = await userSchemas.textSchema.validateAsync(req.query.password);
 
-      const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days
+      const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
       const result = await userServices.login(email, password, maxAge);
 
       res.cookie("jwt", result.token, {
@@ -54,7 +53,6 @@ export default (io: Server) => {
   router.post("/logout/:userId", async (req: Request, res: Response) => {
     try {
       const data = await userSchemas.uidSchema.validateAsync(req.params.userId);
-      console.log(data)
       await userServices.logout(data);
 
       res.clearCookie("jwt");

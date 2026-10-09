@@ -12,9 +12,9 @@ export default (io: Server) => {
     strict: true
   });
 
-  app.use("/company", sessionToken, CompanyRoutes(io));
-  app.use("/user", UsersRoutes(io));
-  app.use("/remote", RemoteRoutes(io));
+  app.use("/company", sessionToken, CompanyRoutes());
+  app.use("/user", UsersRoutes());
+  app.use("/remote", RemoteRoutes());
 
   return app;
 };

@@ -5,10 +5,10 @@ import { remotePostAccess } from "@middleware/remoteAccess";
 import { ExtendedRequest } from "../../_interfaces/requests";
 import { Server } from "socket.io";
 
-export default (io: Server) => {
+export default () => {
   const router = express.Router();
 
-  const companyServices = new CompanyController(io);
+  const companyServices = new CompanyController();
 
   router.post("/remote/post", remotePostAccess, async (req: ExtendedRequest, res: Response) => {
     try {
